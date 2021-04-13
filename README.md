@@ -10,3 +10,6 @@
 
  third.html just break the code to know how a var property works
  third.html深入了一下 vue 中数据的使用
+
+ fourth.html just make some practices with vue's v- directives
+ fourth.html只是一些测试,用来测试 v- 指令的使用方法和效果
