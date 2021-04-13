@@ -7,3 +7,6 @@
 
  second.html trying to create a component for html file
  second.html是一个简单的vue组件化应用构建模型,创建了一个简单的组件
+
+ third.html just break the code to know how a var property works
+ third.html深入了一下 vue 中数据的使用

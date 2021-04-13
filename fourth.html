@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <!-- 我们想要设置一个 vue 对象,并让这个对象只进行一次性的插值 -->
+        <!-- 可以使用 v-once 指令 -->
+        <span v-once>这个内容不会改变: {{ msg }}</span>
+
+        <!-- 如果我们想要输出一段 html 代码,则可以这样 -->
+        <p>Using mustaches: {{ rawHtml }}</p>
+
+        <!-- 当添加 v-html 指令之后会显示被 html 代码渲染之后的内容 -->
+        <p>After using v-html,<span v-html="rawHtml"></span></p>
+        <!-- 其实就是把 html 标签放在了一个 JS 变量里面,然后再输出 -->
+        <!-- 但是这样可以使内容动态化,通过一些指令可以让它变色之类的 -->
+
+        <!-- Vue.js 都提供了完全的 JavaScript 表达式支持 -->
+        <p>number + 1 = {{ number + 1 }}</p>
+        <p>ok? = {{ ok ? 'YES' : 'NO' }}</p>
+        <!-- 甚至可以是一个函数内容 -->
+        <p>reverse message = {{ message.split('').reverse().join('') }}</p>
+        <!-- 所有的 v- 前缀的特殊属性都是指令,它们有一系列的规则 -->
+        <p>比如 v-if 指令将根据其表达式的真假决定元素的显示与否</p>
+        <p v-if="seen">Here is the things that had been hidden</p><p>这里其实是有别的内容的</p>
+        
+    </div>
+</body>
+<script>
+    var vm = new Vue({
+        el : "#app",
+        data : {
+            msg : "hi vue",
+            rawHtml : "<span style='color:red'>these words should be red</span>",
+            number : 5,
+            ok : true,
+            message : "Here",
+            seen : false
+        }
+    })
+</script>
+</html>
