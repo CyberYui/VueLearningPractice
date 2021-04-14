@@ -13,3 +13,6 @@
 
  fourth.html just make some practices with vue's v- directives
  fourth.html只是一些测试,用来测试 v- 指令的使用方法和效果
+
+ fifth.html built for making demo for vue's computed,methods and watch
+ fifth.html进行了一系列关于 vue 中 computed methods 和 watch 的 demo

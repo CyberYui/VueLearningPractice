@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- 因为 AJAX 库和通用工具的生态已经相当丰富，Vue 核心代码没有重复 -->
+    <!-- 提供这些功能以保持精简。这也可以让你自由选择自己更熟悉的工具。 -->
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.13.1/lodash.min.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <div id="example">
+        <!-- 可以看到所有的属性都是在 script 中声明的 -->
+        <p>Original message: "{{ message }}"</p>
+        <p>Computed reversed message: "{{ reversedMessage }}"</p>
+        <!-- 计算属性是基于它们的响应式依赖进行缓存的 -->
+        <!-- 只在相关响应式依赖发生改变时它们才会重新求值 -->
+
+        <!-- 这就意味着只要 message 还没有发生改变 -->
+        <!-- 多次访问 reversedMessage 计算属性会立即返回之前的计算结果 -->
+    </div>
+    <div id="apptest">
+        <p>Original message: "{{ message }}"</p>
+        <!-- 我们可以在表达式中直接调用方法 -->
+        <p>Reversed message: "{{ reversedMessage() }}"</p>
+        <!-- 相比之下，每当触发重新渲染时，调用方法将总会再次执行函数 -->
+    </div>
+
+    <!-- 侦听属性,当你有一些数据需要随着其它数据变动而变动时,你很容易滥用 watch -->
+    <div id="demo">
+        {{ fullName }}
+    </div>
+
+    <div id="app1">
+        {{ fullName }}
+    </div>
+    <!-- 现在在控制台运行 vm4.fullName = 'John Doe' 时，setter 会被调用 -->
+    <!-- vm4.firstName 和 vm4.lastName 也会相应地被更新 -->
+
+    <!-- 虽然计算属性在大多数情况下更合适，但有时也需要一个自定义的侦听器 -->
+    <!-- 这就是为什么 Vue 通过 watch 选项提供了一个更通用的方法，来响应数据的变化 -->
+    <!-- 当需要在数据变化时执行异步或开销较大的操作时，这个方式是最有用的 -->
+    <div id="watch-example">
+        <p>
+          Ask a yes/no question:
+          <input v-model="question">
+        </p>
+        <p>{{ answer }}</p>
+    </div>
+</body>
+<!-- 
+    你可以像绑定普通 property 一样在模板中绑定计算属性
+    Vue 知道 vm.reversedMessage 依赖于 vm.message，
+    因此当 vm.message 发生改变时，所有依赖 vm.reversedMessage 的绑定也会更新
+    而且最妙的是我们已经以声明的方式创建了这种依赖关系：
+    计算属性的 getter 函数是没有副作用 (side effect) 的，这使它更易于测试和理解
+ -->
+<script>
+    var vm = new Vue({
+        el: '#example',
+        data: {
+          message: 'Hello vue'
+        },
+        computed: {
+          // 计算属性的 getter
+          reversedMessage: function () {
+            // `this` 指向 vm 实例
+            return this.message.split('').reverse().join('')
+          }
+        }
+    })
+
+    var vm1 = new Vue({
+        el: '#apptest',
+        data: {
+            message: 'second vue'
+        },
+        // 在组件中
+        methods: {
+            reversedMessage: function () {
+            return this.message.split('').reverse().join('')
+            }
+        }
+    })
+
+    // 关于侦听的代码区别
+    var vm2 = new Vue({
+        el: '#demo',
+        data: {
+          firstName: 'Foo',
+          lastName: 'Bar',
+          fullName: 'Foo Bar'
+        },
+        watch: {
+          firstName: function (val) {
+            this.fullName = val + ' ' + this.lastName
+          },
+          lastName: function (val) {
+            this.fullName = this.firstName + ' ' + val
+          }
+        }
+    })
+    // 上面代码是命令式且重复的。将它与计算属性的版本进行比较：
+    var vm3 = new Vue({
+        el: '#demo',
+        data: {
+          firstName: 'Foo',
+          lastName: 'Bar'
+        },
+        computed: {
+          fullName: function () {
+            return this.firstName + ' ' + this.lastName
+          }
+        }
+    })
+
+    // 计算属性默认只有 getter，不过在需要时你也可以提供一个 setter
+    // 测试 getter 和 setter 共同使用
+    var vm4 = new Vue({
+        el: '#app1',
+        data: {
+            firstName: 'null1',
+            lastName: 'null2'
+        },
+        computed: {
+            fullName: {
+              // getter
+              get: function () {
+                return this.firstName + ' ' + this.lastName
+              },
+              // setter
+              set: function (newValue) {
+                var names = newValue.split(' ')
+                this.firstName = names[0]
+                this.lastName = names[names.length - 1]
+              }
+            }
+        }
+    })
+
+    // 自定义侦听器
+    var watchExampleVM = new Vue({
+        el: '#watch-example',
+        data: {
+          question: '',
+          answer: 'I cannot give you an answer until you ask a question!'
+        },
+        // 侦听器
+        watch: {
+          // 如果 `question` 发生改变，这个函数就会运行
+          question: function (newQuestion, oldQuestion) {
+            this.answer = 'Waiting for you to stop typing...'
+            this.debouncedGetAnswer()
+          }
+        },
+        created: function () {
+          // `_.debounce` 是一个通过 Lodash 限制操作频率的函数。
+          // 在这个例子中，我们希望限制访问 yesno.wtf/api 的频率
+          // AJAX 请求直到用户输入完毕才会发出。想要了解更多关于
+          // `_.debounce` 函数 (及其近亲 `_.throttle`) 的知识，
+          // 请参考：https://lodash.com/docs#debounce
+          this.debouncedGetAnswer = _.debounce(this.getAnswer, 500)
+        },
+        // 方法
+        methods: {
+          getAnswer: function () {
+            if (this.question.indexOf('?') === -1) {
+              this.answer = 'Questions usually contain a question mark. ;-)'
+              return
+            }
+            this.answer = 'Thinking...'
+            var vm = this
+            axios.get('https://yesno.wtf/api')
+              .then(function (response) {
+                vm.answer = _.capitalize(response.data.answer)
+              })
+              .catch(function (error) {
+                vm.answer = 'Error! Could not reach the API. ' + error
+              })
+          }
+        }
+    })
+</script>
+</html>
