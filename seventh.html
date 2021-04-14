@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <!-- 有时，我们想要显示一个数组经过过滤或排序后的版本，而不实际变更或重置原始数据 -->
+        <!-- 在这种情况下，可以创建一个计算属性，来返回过滤或排序后的数组 -->
+        <p>Vue 将被侦听的数组的变更方法进行了包裹，所以它们也将会触发视图更新,这些方法有</p>
+        <ul id="methods_list">
+            <li v-for = "item in items">
+                {{ item.name }}
+            </li>
+        </ul>
+        <p>变更方法，顾名思义，会变更调用了这些方法的原始数组</p>
+        <p>相比之下，也有非变更方法，例如</p>
+        <div id="methods_list1">
+            <li v-for = "item in items">
+                {{ item.name }}
+            </li>
+        </div>
+    </div>
+    <div>
+        <!-- 创建一个计算属性，来返回过滤或排序后的数组 -->
+        <ul id="simpleList">
+            <li v-for="n in evenNumbers">{{ n }}</li>
+        </ul>
+        <!-- 在计算属性不适用的情况下 (例如，在嵌套 v-for 循环中) 你可以使用一个方法 -->
+        <div id="simpleList1">
+            <ul v-for="set in sets">
+                <li v-for="n in even(set)">
+                    {{ n }}
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div>
+        <!-- v-for 也可以接受整数。在这种情况下，它会把模板重复对应次数 -->
+        <div id="outNum">
+            <span v-for="n in 10">
+                {{ n }} 
+            </span>
+        </div>
+        <!-- 可以利用带有 v-for 的 <template> 来循环渲染一段包含多个元素的内容 -->
+        <ul>
+            <template v-for="item in items">
+                <li>
+                    {{ item.msg }}
+                </li>
+                <li class="divider" role="presentation"></li>
+            </template>
+        </ul>
+    </div>
+</body>
+<script>
+    var meList = new Vue({
+        el: '#methods_list',
+        data: {
+            items:[
+                {name: 'push()'},
+                {name: 'pop()'},
+                {name: 'shift()'},
+                {name: 'unshift()'},
+                {name: 'splice()'},
+                {name: 'sort()'},
+                {name: 'reverse()'}
+            ]
+        }
+    })
+    var meList1 = new Vue({
+        el: '#methods_list1',
+        data: {
+            items:[
+                {name: 'filter()'},
+                {name: 'concat()'},
+                {name: 'slice()'}
+            ]
+        }
+    })
+    var simpleList = new Vue({
+        el: '#simpleList',
+        data: {
+            numbers: [ 1, 2, 3, 4, 5 ]
+        },
+        computed: {
+            evenNumbers: function () {
+              return this.numbers.filter(function (number) {
+                  //我们需要的是能整除2的内容
+                return number % 2 === 0
+              })
+            }
+        }
+    })
+    var simpleList1 = new Vue({
+        el: '#simpleList1',
+        data: {
+            sets: [[ 1, 2, 3, 4, 5 ], [6, 7, 8, 9, 10]]
+        },
+        methods: {
+            even: function (numbers) {
+              return numbers.filter(function (number) {
+                return number % 2 === 0
+              })
+            }
+        }
+    })
+    var outNum = new Vue({
+        el: '#outNum',
+        data: {
+            number: ''
+        }
+    })
+</script>
+</html>

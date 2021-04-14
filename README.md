@@ -16,3 +16,12 @@
 
  fifth.html built for making demo for vue's computed,methods and watch
  fifth.html进行了一系列关于 vue 中 computed methods 和 watch 的 demo
+
+ sixth.html is the demo of list's v-for action
+ sixth.html针对 v-for 在列表中的内容进行了一些demo测试,比如从一个列表中拿取内容
+
+ seventh.html is the supplement of sixth.html
+ seventh.html对 sixth.html 的内容进行了一些补充,比如如何调整显示的结果
+
+ eighth.html is how to use v-for in own component
+ eighth.html是关于如何在组件中使用 v-for 指令内容
